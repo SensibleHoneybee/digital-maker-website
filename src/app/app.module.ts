@@ -10,6 +10,9 @@ import { FooterComponent } from './footer/footer.component';
 import { CustomerScannerComponent } from './customer-scanner/customer-scanner.component';
 import { CheckoutComponent } from './checkout/checkout.component';
 import { CodingWindowComponent } from './coding-window/coding-window.component';
+import { StartShoppingComponent } from './start-shopping/start-shopping.component';
+import { StartTillComponent } from './start-till/start-till.component';
+import { WriteCodeComponent } from './write-code/write-code.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +22,10 @@ import { CodingWindowComponent } from './coding-window/coding-window.component';
     FooterComponent,
     CustomerScannerComponent,
     CheckoutComponent,
-    CodingWindowComponent
+    CodingWindowComponent,
+    StartShoppingComponent,
+    StartTillComponent,
+    WriteCodeComponent
   ],
   imports: [
     BrowserModule,

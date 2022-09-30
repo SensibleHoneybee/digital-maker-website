@@ -1,3 +1,14 @@
+@font-face {
+  font-family: 'NunitoSans-Extrabold';
+  src: url("../../assets/fonts/NunitoSans-Extrabold.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+
+.navbar {
+  margin-left: auto;
+}
+
 .navbar-brand {
     font-size: 26px;
     vertical-align: top;
@@ -32,4 +43,21 @@
   right: 15px;
   width: 300px;
   text-align: right;
+}
+
+.toolbar-background {
+  background-color: goldenrod;
+}
+
+.logo {
+  width: 120px;
+}
+
+.logo-text {
+  font-family: NunitoSans-Extrabold;
+  font-size: medium;
+}
+
+.larger {
+  font-size:xx-large;
 }

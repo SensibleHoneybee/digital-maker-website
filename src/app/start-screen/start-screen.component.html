@@ -1,9 +1,13 @@
 <div class="container">
-    <div class="row">
-      Fish pie
-      <button id="create-game" class="col btn btn-success mx-5 mt-5">Create Game</button>
-      <button id="join-game" class="col btn btn-success mx-5 mt-5">Join Game</button>
-      <button id="rejoin-game" class="col btn btn-success mx-5 mt-5">Rejoin Game</button>
-      <!-- <button (click)="rejoinGame()" id="rejoin-game" class="col btn btn-success mx-5 mt-5">Rejoin Game</button> -->
+  <div class="row">
+    <div class="button-wrapper col-lg-4 col-md-4 col-sm-12 col-xs-12 mt-5">
+      <button (click)="startShopping()" id="start-shopping" class="btn btn-success">Start Shopping</button>
     </div>
-  </div>  
+    <div class="button-wrapper col-lg-4 col-md-4 col-sm-12 col-xs-12 mt-5">
+      <button (click)="startTill()" id="start-till" class="btn btn-success">Start Till</button>
+    </div>
+    <div class="button-wrapper col-lg-4 col-md-4 col-sm-12 col-xs-12 mt-5">
+      <button (click)="writeCode()" id="write-code" class="btn btn-success">Write Code</button>
+    </div>
+  </div>
+</div>

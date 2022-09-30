@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { Mode } from '../mode';
-import { MainServiceService } from '../_services/main-service.service';
+import { Mode } from '../_models/mode';
+import { MainService } from '../_services/main.service';
 
 @Injectable({ providedIn: 'root' })
 export class MainWebsiteGuard implements CanActivate {
@@ -11,7 +11,7 @@ export class MainWebsiteGuard implements CanActivate {
 
     constructor(
         private router: Router,
-        private mainService: MainServiceService
+        private mainService: MainService
     ) {
         this.mode = Mode.NotSelected;
         this.modeSubscription = mainService.mode.subscribe(mode => {

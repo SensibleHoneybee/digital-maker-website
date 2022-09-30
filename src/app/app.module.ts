@@ -10,7 +10,7 @@ import { FooterComponent } from './footer/footer.component';
 import { CustomerScannerComponent } from './customer-scanner/customer-scanner.component';
 import { CheckoutComponent } from './checkout/checkout.component';
 import { CodingWindowComponent } from './coding-window/coding-window.component';
-import { StartShoppingComponent } from './start-shopping/start-shopping.component';
+import { ShoppingComponent } from './shopping/shopping.component';
 import { StartTillComponent } from './start-till/start-till.component';
 import { WriteCodeComponent } from './write-code/write-code.component';
 
@@ -23,7 +23,7 @@ import { WriteCodeComponent } from './write-code/write-code.component';
     CustomerScannerComponent,
     CheckoutComponent,
     CodingWindowComponent,
-    StartShoppingComponent,
+    ShoppingComponent,
     StartTillComponent,
     WriteCodeComponent
   ],

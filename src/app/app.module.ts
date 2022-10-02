@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { MatMenuModule } from '@angular/material/menu';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { StartScreenComponent } from './start-screen/start-screen.component';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { CustomerScannerComponent } from './customer-scanner/customer-scanner.component';
@@ -30,7 +30,7 @@ import { WriteCodeComponent } from './write-code/write-code.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    NgbModule
+    MatMenuModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -4,6 +4,8 @@ import { map } from 'rxjs/operators';
 import { Mode } from '../_models/mode';
 import { Instance } from '../_models/instance';
 import { WebsocketService } from './websocket.service';
+import { RequestWrapper } from '../request-wrapper';
+import { RequestType } from '../request-type';
 
 const WEBSERVICE_URL = "wss://xxxxxxxx.execute-api.eu-west-2.amazonaws.com/Prod";
 
@@ -48,5 +50,16 @@ export class MainService {
   setInstance(instance: Instance) {
     sessionStorage.setItem('currentInstanceId', instance.instanceId);
     this.currentInstanceSubject.next(instance);
+  }
+
+  addNewInputEventHandler(inputEventHandlerName: string) {
+    let request = {
+      instanceId: this.currentInstanceValue,
+      inputEventHandlerName: inputEventHandlerName
+    };
+    let requestJson = JSON.stringify(request);
+    
+    var sendMessageRequest:RequestWrapper = { requestType: RequestType.AddNewInputEventHandler, content: requestJson };
+    this.messages.next(sendMessageRequest);
   }
 }

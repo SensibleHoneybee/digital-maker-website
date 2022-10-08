@@ -1,0 +1,38 @@
+.main-label {
+    font-family: NunitoSans-Extrabold;
+    font-size: large;
+}
+
+.sidebar {
+    width: 300px;
+}
+
+.coding-area {
+    width: 100%;
+}
+
+.add-new-btn {
+    width: 150px;
+}
+
+::ng-deep ngb-modal-backdrop {
+    z-index: 1050 !important;
+}
+
+.close-x {
+    font-family: NunitoSans-Extrabold;
+    font-size: large;
+}
+
+.input-code {
+    resize: none;
+    border: none;
+    font-family: monospace;
+    font-size: large;
+}
+
+.input-code:focus {
+    outline: none !important;
+    border:1px solid red;
+    box-shadow: 0 0 10px #719ECE;
+  }

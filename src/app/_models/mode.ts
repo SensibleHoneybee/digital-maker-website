@@ -1,6 +1,7 @@
 export enum Mode {
     NotSelected = 'NotSelected',
+    WriteCode = 'WriteCode',
     CustomerScanner = 'CustomerScanner',
     Checkout = 'Checkout',
-    CodingWindow = 'CodingWindow'
+    MeetingAdmin = 'MeetingAdmin'
 }

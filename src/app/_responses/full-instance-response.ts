@@ -1,22 +1,17 @@
 import { Deserializable } from '../_helpers/deserializable';
-import { InputEventHandler } from "../_models/input-event-handler";
-import { Variable } from '../_models/variable';
+import { Instance } from '../_models/instance';
 
-export class FullGameResponse implements Deserializable<FullGameResponse> {
-    instanceId: string;
-    inputEventHandlers: InputEventHandler[];
-    variables: Variable[];
+export class FullInstanceResponse implements Deserializable<FullInstanceResponse> {
+    instance: Instance;
 
     deserialize(input: any) {
-        this.instanceId = input.InstanceId;
-        this.inputEventHandlers = input.InputEventHandlers.map(
-            function (inputEventHandler: any) {
-                return { nameOfEvent: inputEventHandler.NameOfEvent, pythonCode: inputEventHandler.PythonCode }
-            });
-        this.variables = input.Variables.map(
-            function (variable: any) {
-                return { name: variable.Name, variableType: variable.VariableType, value: variable.Value }
-            });
+        this.instance = {
+            instanceId: input.Instance.InstanceId,
+            instanceName: input.Instance.InstanceName,
+            instanceState: input.Instance.InstanceState,
+            variables: input.Instance.Variables.map(function (variable: any) { return { name: variable.Name, variableType: variable.VariableType, value: variable.Value }}),
+            inputEventHandlers: input.Instance.InputEventHandlers.map(function (ieh: any) { return { nameOfEvent: ieh.NameOfEvent, pythonCode: ieh.PythonCode }})
+        };
         return this;
     }
 }

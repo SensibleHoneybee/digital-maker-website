@@ -1,22 +1,18 @@
 <div class="d-flex pl-2 pt-1 py-md-2 border-bottom shadow-sm toolbar-background">
-  <div class="d-flex flex-row align-items-center">
-    <div class="d-flex flex-column">
-      <img class="logo" src='/assets/images/scouts-black.svg'>
-      <label class="logo-text">7th Camberwell</label>
+  <div class="d-flex flex-row w-100 justify-content-between">
+    <div class="d-flex flex-row align-items-center">
+      <div class="d-flex flex-column">
+        <img class="logo" src='/assets/images/scouts-black.svg'>
+        <label class="logo-text">7th Camberwell</label>
+      </div>
+      <div class="d-flex flex-column">
+        <label class="logo-text larger pl-2">Digital Maker{{currentMeetingName != null ? ' - ' : ''}}{{currentMeetingName}}</label>
+      </div>
     </div>
-    <div class="d-flex flex-column">
-      <label class="logo-text larger pl-2">Digital Maker</label>
-    </div>
+    <div class="d-flex flex-row align-items-center">
+      <div class="d-flex flex-column">
+        <label class="logo-text not-so-large pr-2">{{currentParticipantNames}}</label>
+      </div>
+    </div> 
   </div>
-  <nav class="navbar navbar-static-top d-flex justify-content-end" role="navigation">
-    <button mat-button type="button" [matMenuTriggerFor]="hamburgerMenu" class="navbar-toggle collapsed border-0 toolbar-background" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-      <div class="icon-bar"></div>
-      <div class="icon-bar"></div>
-      <div class="icon-bar"></div>
-    </button>
-
-    <mat-menu #hamburgerMenu="matMenu" xPosition="before">
-      <a mat-menu-item class="menu-item-a nav-link text-warning py-1" routerLink="/create-game"><label class="menu-item-label position-absolute">Create Game</label></a>
-    </mat-menu>
-  </nav>
 </div>

@@ -58,6 +58,10 @@
   font-size: medium;
 }
 
+.not-so-large {
+  font-size:x-large;
+}
+
 .larger {
   font-size:xx-large;
 }

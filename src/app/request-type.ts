@@ -1,8 +1,18 @@
 export enum RequestType {
-    CreateInstance = 'CreateInstance',
+    LoginMeetingAdmin = 'LoginMeetingAdmin',
+    CreateMeeting = 'CreateMeeting',
+    JoinMeetingAsAdmin = 'JoinMeetingAsAdmin',
+    JoinMeeting = 'JoinMeeting',
+    GetParticipantsForMeeting = 'GetParticipantsForMeeting',
+    JoinNewParticipant = 'JoinNewParticipant',
+    RejoinMeetingAndParticipantWithLoginCipher = 'RejoinMeetingAndParticipantWithLoginCipher',
+    RejoinParticipantWithPassword = 'RejoinParticipantWithPassword',
+    GetOrCreateInstance = 'GetOrCreateInstance',
     ReconnectInstanceAdmin = 'ReconnectInstanceAdmin',
     AddNewInputEventHandler = 'AddNewInputEventHandler',
-    StartShopping = 'StartShopping',
-    ReconnectShoppingSession = 'ReconnectShoppingSession',
+    AddNewVariable = 'AddNewVariable',
+    StartCheckout = 'StartCheckout',
+    ReconnectCheckout = 'ReconnectCheckout',
+    ConnectCustomerScanner = 'ConnectCustomerScanner',
     InputReceived = 'InputReceived'
 }

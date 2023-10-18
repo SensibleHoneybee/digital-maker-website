@@ -1,10 +1,10 @@
 import { InputEventHandler } from "./input-event-handler";
-import { Variable } from "./variable";
+import { OutputReceiver } from "./output-receiver";
 
 export interface Instance {
     instanceId: string;
-    instanceName: string;
-    instanceState: string;
-    variables: Variable[];
+    participantNames: string;
     inputEventHandlers: InputEventHandler[];
+    outputReceivers: OutputReceiver[];
+    isRunning: boolean;
 }

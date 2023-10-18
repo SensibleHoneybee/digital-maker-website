@@ -1,12 +1,10 @@
 export enum DigitalMakerResponseType {
-    MeetingAdminLoggedIn = 'MeetingAdminLoggedIn',
-    MeetingOnly = 'MeetingOnly',
-    MeetingWithParticipant = 'MeetingWithParticipant',
-    ParticipantIdsAndNames = 'ParticipantIdsAndNames',
     FullInstance = 'FullInstance',
-    FullShoppingSession = 'FullShoppingSession',
+    InstanceCreated = 'InstanceCreated',
+    InstanceDoesNotExist = 'InstanceDoesNotExist',
     NoInputHandler = 'NoInputHandler',
     OutputAction = 'OutputAction',
+    UserMessage = 'UserMessage',
     Error = 'Error',
     Success = 'Success'
 }

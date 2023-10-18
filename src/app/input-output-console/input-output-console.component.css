@@ -1,0 +1,39 @@
+.mat-tab-label-active {
+    background: white;
+}
+
+.mat-tab-labels {
+    border-bottom: 2px solid gray;
+    height: 30px;
+}
+
+.mat-tab-label {
+    height: 28px !important;
+    padding-left: 4px !important;
+    padding-right: 6px !important;
+}
+
+.mat-tab-group.mat-primary .mat-ink-bar {
+    height: 30px;
+    background-color: transparent;
+    box-sizing: border-box;
+    border-top: 2px solid crimson;
+    border-left: 2px solid crimson;
+    border-right: 2px solid crimson;
+    border-bottom: 2px solid gray;
+}
+
+.mat-tab-nav-bar, .mat-tab-header {
+    border-bottom: none;
+    height: 30px;
+}
+
+.mat-tab-body-wrapper {
+    height: 100%!important;
+}
+
+.mat-tab-group *{
+    transition: none!important;
+    transition-duration: 0ms!important;
+    transition-delay: 0ms!important;
+}

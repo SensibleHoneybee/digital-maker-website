@@ -1,8 +1,5 @@
 ﻿export class InputReceivedRequest {
-  shoppingSessionId: string;
+  instanceId: string;
   inputName: string;
   data: string;
-  meetingId: string;
-  participantId: string;
-  loginCipher: string;
 }

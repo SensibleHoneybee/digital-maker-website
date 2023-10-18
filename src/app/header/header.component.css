@@ -53,15 +53,37 @@
   width: 120px;
 }
 
+.logo-narrow {
+  display: none;
+}
+
+@media screen and (max-width: 910px) {
+  .logo-narrow {
+    width: 40px;
+    margin: auto;
+    padding: 5px;
+    display: block;
+  }
+
+  .logo, .logo-text {
+    display: none;
+  }
+}
+
 .logo-text {
   font-family: NunitoSans-Extrabold;
   font-size: medium;
 }
 
-.not-so-large {
-  font-size:x-large;
+.page-title {
+  margin: auto;
+  padding: 5px;
+  font-family: NunitoSans-Extrabold;
+  font-size: medium;
 }
 
-.larger {
-  font-size:xx-large;
+@media screen and (max-width: 910px) {
+  .larger {
+    font-size: large;
+  }
 }

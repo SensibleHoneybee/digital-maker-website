@@ -2,36 +2,25 @@
   <label class="main-label mx-4 mt-2">Write Code</label>
   <div class="d-flex flex-row h-100" *ngIf="currentInstance">
     <div class="d-flex flex-column sidebar ml-2">
-      <div class="h-50 mb-1">
+      <div class="h-100 mb-1">
         <div class="card shadow h-100">
           <div class="d-none d-md-flex card-header px-2 px-md-3 py-2 py-md-3 flex-row align-items-center justify-content-between">
             <h6 class="m-0 font-weight-bold text-primary">Input Events</h6>
           </div>
           <div class="d-flex flex-column flex-grow-1 p-lg-2">
             <div class="d-flex flex-column flex-grow-1">
-              <div class="d-flex" *ngFor="let inputEventHandler of inputEventHandlers">
-                <a [routerLink]="" (click)="setCurrentInputEventHandler(inputEventHandler)">{{inputEventHandler.nameOfEvent}}</a>
+              <div class="d-flex" *ngFor="let inputEventHandler of currentInstance.inputEventHandlers">
+                <button class="btn btn-light text-left input-event-handler-link w-100 m-1 pl-2" [ngClass]="{'selected-input-event-handler-link': inputEventHandler === currentInputEventHandler}"
+                        [routerLink]="" (click)="selectNewInputEventHandler(inputEventHandler)">
+                   <div class="w-80">{{inputEventHandler.nameOfEvent}}</div>
+                </button>
+                <button class="btn btn-light delete-button  m-1 p-0" (click)="deleteInputEventHandler(inputEventHandler)">
+                  <img src='/assets/images/trash.svg'>
+                </button>
               </div>
             </div>
             <div class="d-flex">
-                <button (click)="addNewInputEventHandler()" id="add-new-input-event-handler" class="col btn btn-primary">Add New...</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="h-50 my-1">
-        <div class="card shadow h-100">
-          <div class="d-none d-md-flex card-header px-2 px-md-3 py-2 py-md-3 flex-row align-items-center justify-content-between">
-            <h6 class="m-0 font-weight-bold text-primary">Variables</h6>
-          </div>
-          <div class="d-flex flex-column flex-grow-1 p-lg-2">
-            <div class="d-flex flex-column flex-grow-1">
-              <div class="d-flex" *ngFor="let variable of variables">
-                <a [routerLink]="" (click)="setCurrentVariable(variable)">{{variable.name}}</a>
-              </div>
-            </div>
-            <div class="d-flex">
-              <button (click)="addNewVariable()" id="add-new-input-event-handler" class="col btn btn-primary">Add New...</button>
+                <button (click)="showNewInputEventHandlerDialog()" id="add-new-input-event-handler" class="col btn btn-primary">Add New...</button>
             </div>
           </div>
         </div>
@@ -39,14 +28,32 @@
     </div>
     <div class="coding-area h-100 ml-2 mr-1 pb-1">
       <div class="card shadow h-100">
-        <div class="d-none d-md-flex card-header px-2 px-md-3 py-2 py-md-3 flex-row align-items-center justify-content-between">
-          <h6 class="m-0 font-weight-bold text-primary">Code</h6>
+        <div class="d-none d-md-flex card-header px-2 px-md-3 py-2 py-md-2 flex-row align-items-center d-flex">
+          <h6 class="font-weight-bold text-primary mr-auto">Code</h6>
+          <button (click)="saveCode()" id="add-new-input-event-handler" class="btn btn-primary ml-1 mr-1"
+            [disabled]="currentCode == currentInputEventHandler.pythonCode">Save code</button>
+          <!-- <button (click)="revertCode()" id="add-new-input-event-handler" class="btn btn-warning ml-1 mr-1"
+            [disabled]="currentCode == currentInputEventHandler.pythonCode">Revert to saved version</button> -->
+          <button (click)="runCode()" id="add-new-input-event-handler" class="btn btn-success ml-1 mr-1"
+            [disabled]="currentCode != currentInputEventHandler.pythonCode">Run code ⏵</button>
         </div>
-        <form [formGroup]="writeCodeForm" class="form h-100 w-100">
-          <textarea formControlName="inputCode" class="input-code h-100 w-100 p-4">
-            At w3schools.com you will learn how to make a website. They offer free tutorials in all web development technologies.
-          </textarea>
-        </form>
+        <textarea #codingWindow [(ngModel)]="currentCode" class="input-code h-100 w-100 p-4"></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="position-absolute running-code-background w-100 h-100" *ngIf="(currentInstance && currentInstance.isRunning) || stopRunningInitiated">
+    <div class="card shadow h-75 mt-3 mx-4">
+      <div class="d-none d-md-flex card-header px-2 px-md-3 py-2 py-md-3 flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Running code</h6>
+      </div>
+      <div class="d-flex flex-column flex-grow-1 p-lg-2">
+        <div class="d-flex flex-column flex-grow-1">
+          <textarea #messagesWindow readonly [(ngModel)]="messageFeed" class="input-code h-100 w-100 p-4"></textarea>
+        </div>
+        <div class="d-flex ml-auto mr-2 my-2">
+            <button *ngIf="!stopRunningInitiated" type="button" class="btn btn-primary" (click)="stopRunningCode()">Stop running</button>
+            <button *ngIf="stopRunningInitiated" type="button" class="btn btn-primary" (click)="closeRunningCodeWindow()">Close</button>
+        </div>
       </div>
     </div>
   </div>
@@ -57,22 +64,23 @@
       <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"><span aria-hidden="true" class="close-x">&times;</span></button>
     </div>
     <div class="modal-body">
-      <form [formGroup]="modalForm" class="form">
         <div class="mb-3">
-          <label for="inputText">{{dialogLabel}}</label>
+          <label for="inputText">Please select an input event to add</label>
           <div class="input-group">
-            <input formControlName="inputText" type="text" id="input-value" class="form-control">
+            <div class="d-flex" *ngFor="let inputEventHandler of unusedInputEventHandlers">
+              <button class="btn btn-light text-left input-event-handler-link w-100 m-1 pl-2" [ngClass]="{'selected-input-event-handler-link': inputEventHandler === currentInputEventHandler}"
+                 [routerLink]="" (click)="addNewInputEventHandler(inputEventHandler)">{{inputEventHandler.nameOfEvent}}</button>
+            </div>
           </div>
         </div>
-      </form>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Save</button>
+      <button type="button" class="btn btn-outline-dark" (click)="modal.close('Cancel click')">Cancel</button>
     </div>
 </ng-template>
 <ng-template #modalLoading let-modal>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">Loading, please wait...</h4>
+    <h4 class="modal-title" id="modal-basic-title">{{loadingMessage}}</h4>
   </div>
   <div class="modal-body">
     <img *ngIf="loading" class="pl-3" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />

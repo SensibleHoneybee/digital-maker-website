@@ -24,6 +24,8 @@ export class InputOutputConsoleComponent implements OnInit {
   dialogTitle = '';
   dialogLabel = '';
   currentConsoleOutputText = '';
+  currentInputTab = 0;
+  currentOutputTab = 0;
   loading = false;
   @ViewChild('modalDialog') modalDialog: any;
   @ViewChild('modalLoading') modalLoading: any;

@@ -27,7 +27,7 @@
       </div>
     </div>
     <div class="coding-area h-100 ml-2 mr-1 pb-1">
-      <div class="card shadow h-100">
+      <div class="card shadow h-75 mb-1">
         <div class="d-none d-md-flex card-header px-2 px-md-3 py-2 py-md-2 flex-row align-items-center d-flex">
           <h6 class="font-weight-bold text-primary mr-auto">Code</h6>
           <button (click)="saveCode()" id="add-new-input-event-handler" class="btn btn-primary ml-1 mr-1"
@@ -35,25 +35,21 @@
           <!-- <button (click)="revertCode()" id="add-new-input-event-handler" class="btn btn-warning ml-1 mr-1"
             [disabled]="currentCode == currentInputEventHandler.pythonCode">Revert to saved version</button> -->
           <button (click)="runCode()" id="add-new-input-event-handler" class="btn btn-success ml-1 mr-1"
-            [disabled]="currentCode != currentInputEventHandler.pythonCode">Run code ⏵</button>
+            [disabled]="currentCode != currentInputEventHandler.pythonCode"
+            *ngIf="currentInstance && !currentInstance.isRunning">Run code ⏵</button>
+          <button (click)="stopRunningCode()" id="add-new-input-event-handler" class="btn btn-warning ml-1 mr-1"
+            *ngIf="currentInstance && currentInstance.isRunning">Stop running code</button>
         </div>
-        <textarea #codingWindow [(ngModel)]="currentCode" class="input-code h-100 w-100 p-4"></textarea>
+        <textarea #codingWindow [(ngModel)]="currentCode" class="input-code h-100 w-100 p-4"
+          [readonly]="currentInstance && currentInstance.isRunning"
+          [ngClass]="{'gray-background': currentInstance && currentInstance.isRunning}"></textarea>
       </div>
-    </div>
-  </div>
-  <div class="position-absolute running-code-background w-100 h-100" *ngIf="(currentInstance && currentInstance.isRunning) || stopRunningInitiated">
-    <div class="card shadow h-75 mt-3 mx-4">
-      <div class="d-none d-md-flex card-header px-2 px-md-3 py-2 py-md-3 flex-row align-items-center justify-content-between">
-        <h6 class="m-0 font-weight-bold text-primary">Running code</h6>
-      </div>
-      <div class="d-flex flex-column flex-grow-1 p-lg-2">
-        <div class="d-flex flex-column flex-grow-1">
-          <textarea #messagesWindow readonly [(ngModel)]="messageFeed" class="input-code h-100 w-100 p-4"></textarea>
+      <div class="card shadow h-25 mb-1">
+        <div class="d-none d-md-flex card-header px-2 px-md-3 py-2 py-md-3 flex-row align-items-center justify-content-between">
+          <h6 class="m-0 font-weight-bold text-primary">Running code message window</h6>
         </div>
-        <div class="d-flex ml-auto mr-2 my-2">
-            <button *ngIf="!stopRunningInitiated" type="button" class="btn btn-primary" (click)="stopRunningCode()">Stop running</button>
-            <button *ngIf="stopRunningInitiated" type="button" class="btn btn-primary" (click)="closeRunningCodeWindow()">Close</button>
-        </div>
+        <textarea #messagesWindow readonly [(ngModel)]="messageFeed" class="running-code-messages h-100 w-100 mb-2 p-2"
+          [ngClass]="{'gray-background': currentInstance && !currentInstance.isRunning}"></textarea>
       </div>
     </div>
   </div>

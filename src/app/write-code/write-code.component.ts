@@ -27,7 +27,6 @@ export class WriteCodeComponent implements OnInit {
   currentCode = '';
   inputEventHandlerToSet = '';
   messageFeed = '';
-  stopRunningInitiated = false;
   loadingMessage = '';
   loading = false;
   @ViewChild('modalDialog') modalDialog: any;
@@ -200,13 +199,8 @@ export class WriteCodeComponent implements OnInit {
   }
 
   stopRunningCode(): void {
-    this.stopRunningInitiated = true;
     this.loadingMessage = 'Preparing to stop running code, please wait...';
     this.mainService.setLoading(true);
     this.mainService.runCode(false);
-  }
-
-  closeRunningCodeWindow(): void {
-    this.stopRunningInitiated = false;
   }
 }

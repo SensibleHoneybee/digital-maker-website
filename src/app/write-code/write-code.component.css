@@ -49,3 +49,14 @@
 .running-code-background {
     background-color: #806c757d !important;
 }
+
+.running-code-messages {
+    resize: none;
+    border: none;
+    font-family: monospace;
+    font-size: medium;
+}
+
+.gray-background {
+    background: gray;
+}

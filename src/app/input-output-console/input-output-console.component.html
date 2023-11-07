@@ -5,8 +5,14 @@
             <div class="d-flex card-header px-2 px-md-3 py-2 py-md-3 flex-row align-items-center justify-content-between">
               <h6 class="m-0 font-weight-bold text-primary">Inputs</h6>
             </div>
-            <mat-tab-group class="h-100">
-                <mat-tab label="Buttons" class="h-100">
+            <div class="flex-row d-flex flex-wrap">
+              <button [ngClass]="{'btn-primary': currentInputTab == 0, 'btn-info': currentInputTab != 0}" class="mr-1 mt-1" (click)="currentInputTab = 0">Buttons</button>
+              <button [ngClass]="{'btn-primary': currentInputTab == 1, 'btn-info': currentInputTab != 1}" class="mr-1 mt-1" (click)="currentInputTab = 1">Text input</button>
+              <button [ngClass]="{'btn-primary': currentInputTab == 2, 'btn-info': currentInputTab != 2}" class="mr-1 mt-1" (click)="currentInputTab = 2">Barcode reader</button>
+              <button [ngClass]="{'btn-primary': currentInputTab == 3, 'btn-info': currentInputTab != 3}" class="mr-1 mt-1" (click)="currentInputTab = 3">Game controller</button>
+            </div>
+            <div class="h-100">
+                <div class="h-100" *ngIf="currentInputTab == 0">
                     <div class="d-flex h-50">
                         <div class="w-50 h-100 p-1">
                             <button class="w-100 h-100 btn btn-danger" (click)="inputButtonClicked('red')"></button>
@@ -23,24 +29,33 @@
                             <button class="w-100 h-100 btn btn-primary" (click)="inputButtonClicked('blue')"></button>
                         </div>
                     </div>
-                </mat-tab>
-                <mat-tab label="Text input"></mat-tab>
-                <mat-tab label="Barcode reader"></mat-tab>
-                <mat-tab label="Game controller"></mat-tab>
-            </mat-tab-group>
+                </div>
+                <div class="h-100" *ngIf="currentInputTab == 1">
+                  Text input
+                </div>
+                <div class="h-100" *ngIf="currentInputTab == 1">
+                  Barcode reader
+                </div>
+                <div class="h-100" *ngIf="currentInputTab == 1">
+                  Game controller
+                </div>
+            </div>
           </div>
           <div class="card shadow h-50">
             <div class="d-flex card-header px-2 px-md-3 py-2 py-md-3 flex-row align-items-center justify-content-between">
-              <h6 class="m-0 font-weight-bold text-primary">Outputs</h6>
+              <h6 class="m-0 font-weight-bold text-primary">Inputs</h6>
             </div>
-            <div class="d-flex flex-column flex-grow-1 p-lg-2">
-                <mat-tab-group>
-                    <mat-tab label="Text">
-                        {{currentConsoleOutputText}}
-                    </mat-tab>
-                    <mat-tab label="Second">Text input</mat-tab>
-                    <mat-tab label="Third">Barcode reader</mat-tab>
-                </mat-tab-group>
+            <div class="flex-row d-flex flex-wrap">
+              <button [ngClass]="{'btn-primary': currentOutputTab == 0, 'btn-info': currentOutputTab != 0}" class="mr-1 mt-1" (click)="currentOutputTab = 0">Text</button>
+              <button [ngClass]="{'btn-primary': currentOutputTab == 1, 'btn-info': currentOutputTab != 1}" class="mr-1 mt-1" (click)="currentOutputTab = 1">Spider</button>
+            </div>
+            <div class="h-100">
+                <div class="h-100" *ngIf="currentOutputTab == 0">
+                  <p class="h4 m-1">{{currentConsoleOutputText}}</p>
+                </div>
+                <div class="h-100" *ngIf="currentOutputTab == 1">
+                  <p class="h1 m-auto">🕷️</p>
+                </div>
             </div>
           </div>
         </div>

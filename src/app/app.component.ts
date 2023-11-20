@@ -40,11 +40,12 @@ export class AppComponent {
           break;
         case DigitalMakerResponseType.NoInputHandler:
           var noInputHandlerResponse = new NoInputHandlerResponse().deserialize(JSON.parse(responseWrapper.content));
-          alert('No input handler');
+          this.mainService.setLoading(false);
           break;
         case DigitalMakerResponseType.OutputAction:
           var outputActionResponse = new OutputActionResponse().deserialize(JSON.parse(responseWrapper.content));
-          this.mainService.setConsoleOutputText(outputActionResponse.data);
+          this.mainService.outputReceived(outputActionResponse);
+          this.mainService.setLoading(false);
           break;
         case DigitalMakerResponseType.UserMessage:
           var messageResponse = new UserMessageResponse().deserialize(JSON.parse(responseWrapper.content));
@@ -58,6 +59,7 @@ export class AppComponent {
           } else {
             this.mainService.setErrorMessage('An error occurred with null errorResponse');
           }
+          this.mainService.setLoading(false);
           break;
         case DigitalMakerResponseType.Success:
           var successResponse = new SuccessResponse().deserialize(JSON.parse(responseWrapper.content));

@@ -40,7 +40,7 @@
           <button (click)="stopRunningCode()" id="add-new-input-event-handler" class="btn btn-warning ml-1 mr-1"
             *ngIf="currentInstance && currentInstance.isRunning">Stop running code</button>
         </div>
-        <textarea #codingWindow [(ngModel)]="currentCode" class="input-code h-100 w-100 p-4"
+        <textarea #codingWindow [(ngModel)]="currentCode" spellcheck="false" class="input-code h-100 w-100 p-4"
           [readonly]="currentInstance && currentInstance.isRunning"
           [ngClass]="{'gray-background': currentInstance && currentInstance.isRunning}"></textarea>
       </div>
@@ -48,7 +48,7 @@
         <div class="d-none d-md-flex card-header px-2 px-md-3 py-2 py-md-3 flex-row align-items-center justify-content-between">
           <h6 class="m-0 font-weight-bold text-primary">Running code message window</h6>
         </div>
-        <textarea #messagesWindow readonly [(ngModel)]="messageFeed" class="running-code-messages h-100 w-100 mb-2 p-2"
+        <textarea #messagesWindow readonly [(ngModel)]="messageFeed" spellcheck="false" class="running-code-messages h-100 w-100 mb-2 p-2"
           [ngClass]="{'gray-background': currentInstance && !currentInstance.isRunning}"></textarea>
       </div>
     </div>

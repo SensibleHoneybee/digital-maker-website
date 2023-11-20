@@ -88,12 +88,14 @@ export class WriteCodeComponent implements OnInit {
       }
     });
     this.newUserMessageSubscription = mainService.newUserMessage.subscribe(msg => {
-      if (this.messageFeed != '') {
-        this.messageFeed = this.messageFeed + '\n'; 
+      if (msg != null && msg != '') {
+        if (this.messageFeed != '') {
+          this.messageFeed = this.messageFeed + '\n'; 
+        }
+        this.messageFeed = this.messageFeed + '• ' + msg;
+        this.messagesWindow.nativeElement.focus();
+        this.messagesWindow.nativeElement.scrollTop = this.messagesWindow.nativeElement.scrollHeight;
       }
-      this.messageFeed = this.messageFeed + '• ' + msg;
-      this.messagesWindow.nativeElement.focus();
-      this.messagesWindow.nativeElement.scrollTop = this.messagesWindow.nativeElement.scrollHeight;
     });
   }
 

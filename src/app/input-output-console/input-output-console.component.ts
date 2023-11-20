@@ -20,10 +20,12 @@ export class InputOutputConsoleComponent implements OnInit {
   currentLoadingSubscription: Subscription;
   currentErrorMessageSubscription: Subscription;
   currentConsoleOutputTextSubscription: Subscription;
+  currentPlaySoundSubscription: Subscription;
   closeResult = '';
   dialogTitle = '';
   dialogLabel = '';
   currentConsoleOutputText = '';
+  currentPlaySound = '';
   currentInputTab = 0;
   currentOutputTab = 0;
   loading = false;
@@ -50,6 +52,11 @@ export class InputOutputConsoleComponent implements OnInit {
     this.currentConsoleOutputTextSubscription = mainService.currentConsoleOutputText.subscribe(x => {
       this.currentConsoleOutputText = x;
     });
+    this.currentPlaySoundSubscription = mainService.currentPlaySound.subscribe(x => {
+      if (x != null && x != '') {
+        this.playSound(x);
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -66,6 +73,7 @@ export class InputOutputConsoleComponent implements OnInit {
     this.currentLoadingSubscription.unsubscribe();
     this.currentErrorMessageSubscription.unsubscribe();
     this.currentConsoleOutputTextSubscription.unsubscribe();
+    this.currentPlaySoundSubscription.unsubscribe();
   }
 
   inputButtonClicked(colour: string) {
@@ -76,5 +84,12 @@ export class InputOutputConsoleComponent implements OnInit {
     };
 
     this.mainService.inputReceived(inputReceivedRequest)
+  }
+
+  playSound(soundName: string) {
+    let audio = new Audio();
+    audio.src = '/assets/sounds/' + soundName + '.mp3';
+    audio.load();
+    audio.play();
   }
 }

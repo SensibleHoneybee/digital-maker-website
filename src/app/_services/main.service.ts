@@ -12,6 +12,7 @@ import { StartOrStopRunningRequest } from '../_requests/StartOrStopRunningReques
 import { CreateInstanceRequest } from '../_requests/CreateInstanceRequest';
 import { InputReceivedRequest } from '../_requests/InputReceivedRequest';
 import { DeleteInputEventHandlerRequest } from '../_requests/DeleteInputEventHandlerRequest';
+import { OutputActionResponse } from '../_responses/output-action-response';
 
 const WEBSERVICE_URL = "wss://ob1xmlgs72.execute-api.eu-west-2.amazonaws.com/Prod/";
 
@@ -37,6 +38,8 @@ export class MainService {
   public currentPageTitle: Observable<string>;
   private currentConsoleOutputTextSubject: BehaviorSubject<string>;
   public currentConsoleOutputText: Observable<string>;
+  private currentPlaySoundSubject: BehaviorSubject<string>;
+  public currentPlaySound: Observable<string>;
   
   public messages: Subject<any>;
 
@@ -59,6 +62,8 @@ export class MainService {
     this.currentPageTitle = this.currentPageTitleSubject.asObservable();
     this.currentConsoleOutputTextSubject = new BehaviorSubject<string>('Digital Maker');
     this.currentConsoleOutputText = this.currentConsoleOutputTextSubject.asObservable();
+    this.currentPlaySoundSubject = new BehaviorSubject<string>('');
+    this.currentPlaySound = this.currentPlaySoundSubject.asObservable();
 
     this.messages = <Subject<any>>wsService.connect(WEBSERVICE_URL).pipe(map(
       response => {
@@ -76,6 +81,7 @@ export class MainService {
   public get newUserMessageValue(): string { return this.newUserMessageSubject.value; }
   public get currentPageTitleValue(): string { return this.currentPageTitleSubject.value; }
   public get currentConsoleOutputTextValue(): string { return this.currentConsoleOutputTextSubject.value; }
+  public get currentPlaySoundValue(): string { return this.currentPlaySoundSubject.value; }
 
   leave() {
     // remove user from local storage to log user out
@@ -83,6 +89,7 @@ export class MainService {
     this.currentInstanceSubject.next(null);
     this.currentPageTitleSubject.next('Digital Maker');
     this.currentConsoleOutputTextSubject.next('');
+    this.currentPlaySoundSubject.next('');
     this.currentInputEventHandlerSubject.next(null);
     this.newUserMessageSubject.next('');
     this.currentLoadingSubject.next(false);
@@ -106,6 +113,10 @@ export class MainService {
 
   setConsoleOutputText(consoleOutputText: string) {
     this.currentConsoleOutputTextSubject.next(consoleOutputText);
+  }
+
+  playSound(soundName: string) {
+    this.currentPlaySoundSubject.next(soundName);
   }
 
   setInputEventHandler(inputEventHandler: InputEventHandler) {
@@ -207,7 +218,7 @@ export class MainService {
 
     let connectInputOutputDeviceRequest = {
       instanceId: this.currentInstanceIdValue,
-      outputReceiverNames: [ 'textbox' ]
+      outputReceiverNames: [ 'text', 'sound' ]
     };
     let connectInputOutputDeviceRequestJson = JSON.stringify(connectInputOutputDeviceRequest);
     
@@ -220,6 +231,19 @@ export class MainService {
     
     var requestWrapper: RequestWrapper = { requestType: RequestType.InputReceived, content: inputReceivedRequestJson };
     this.messages.next(requestWrapper);
+    this.setLoading(true);
+  }
+
+  outputReceived(outputActionResponse: OutputActionResponse) {
+    switch (outputActionResponse.outputName) {
+      case 'text':
+        this.setConsoleOutputText(outputActionResponse.data);
+        break;
+      case 'sound':
+        this.playSound(outputActionResponse.data.toLowerCase());
+        break;
+    }
+    
   }
 
   getDefaultInputEventHandlers(): InputEventHandler[] {

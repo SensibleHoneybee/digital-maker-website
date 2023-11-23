@@ -1,43 +1,47 @@
 <div class="d-flex flex-column h-100 px-1">
-    <div class="d-flex flex-row h-100" *ngIf="currentInstance && currentInstance.isRunning">
+    <div class="d-flex flex-row h-100" *ngIf="currentInstance">
         <div class="h-100 w-100 mb-1">
           <div class="card shadow h-50">
             <div class="d-flex card-header px-2 px-md-3 py-2 py-md-3 flex-row align-items-center justify-content-between">
               <h6 class="m-0 font-weight-bold text-primary">Inputs</h6>
             </div>
             <div class="flex-row d-flex flex-wrap">
-              <button [ngClass]="{'btn-primary': currentInputTab == 0, 'btn-info': currentInputTab != 0}" class="mr-1 mt-1" (click)="currentInputTab = 0">Buttons</button>
+              <button [ngClass]="{'btn-primary': currentInputTab == 0, 'btn-info': currentInputTab != 0}" class="mr-1 mt-1" (click)="currentInputTab = 0">Button</button>
               <button [ngClass]="{'btn-primary': currentInputTab == 1, 'btn-info': currentInputTab != 1}" class="mr-1 mt-1" (click)="currentInputTab = 1">Text input</button>
-              <button [ngClass]="{'btn-primary': currentInputTab == 2, 'btn-info': currentInputTab != 2}" class="mr-1 mt-1" (click)="currentInputTab = 2">Barcode reader</button>
-              <button [ngClass]="{'btn-primary': currentInputTab == 3, 'btn-info': currentInputTab != 3}" class="mr-1 mt-1" (click)="currentInputTab = 3">Game controller</button>
+              <button [ngClass]="{'btn-primary': currentInputTab == 3, 'btn-info': currentInputTab != 3}" class="mr-1 mt-1" (click)="currentInputTab = 2">Game controller</button>
             </div>
             <div class="h-100">
                 <div class="h-100" *ngIf="currentInputTab == 0">
+                    <div class="d-flex h-25"></div>
                     <div class="d-flex h-50">
+                        <div class="w-25 h-100 p-1"></div>
                         <div class="w-50 h-100 p-1">
-                            <button class="w-100 h-100 btn btn-danger" (click)="inputButtonClicked('red')"></button>
+                            <button class="w-100 h-100 btn btn-info" (click)="inputButtonClicked()"><h3>Click me!</h3></button>
                         </div>
-                        <div class="w-50 h-100 p-1">
-                            <button class="w-100 h-100 btn btn-warning" (click)="inputButtonClicked('yellow')"></button>
-                        </div>
+                        <div class="w-25 h-100 p-1"></div>
                     </div>
-                    <div class="d-flex h-50">
-                        <div class="w-50 h-100 p-1">
-                            <button class="w-100 h-100 btn btn-success" (click)="inputButtonClicked('green')"></button>
-                        </div>
-                        <div class="w-50 h-100 p-1">
-                            <button class="w-100 h-100 btn btn-primary" (click)="inputButtonClicked('blue')"></button>
-                        </div>
-                    </div>
+                    <div class="d-flex h-25"></div>
                 </div>
                 <div class="h-100" *ngIf="currentInputTab == 1">
                   Text input
                 </div>
-                <div class="h-100" *ngIf="currentInputTab == 1">
-                  Barcode reader
-                </div>
-                <div class="h-100" *ngIf="currentInputTab == 1">
-                  Game controller
+                <div class="h-100" *ngIf="currentInputTab == 2">
+                  <div class="d-flex h-50">
+                      <div class="w-50 h-100 p-1">
+                          <button class="w-100 h-100 btn btn-danger" (click)="gameControllerButtonClicked('red')"></button>
+                      </div>
+                      <div class="w-50 h-100 p-1">
+                          <button class="w-100 h-100 btn btn-warning" (click)="gameControllerButtonClicked('yellow')"></button>
+                      </div>
+                  </div>
+                  <div class="d-flex h-50">
+                      <div class="w-50 h-100 p-1">
+                          <button class="w-100 h-100 btn btn-success" (click)="gameControllerButtonClicked('green')"></button>
+                      </div>
+                      <div class="w-50 h-100 p-1">
+                          <button class="w-100 h-100 btn btn-primary" (click)="gameControllerButtonClicked('blue')"></button>
+                      </div>
+                  </div>
                 </div>
             </div>
           </div>
@@ -54,15 +58,27 @@
                   <p class="h4 m-1">{{currentConsoleOutputText}}</p>
                 </div>
                 <div class="h-100" *ngIf="currentOutputTab == 1">
-                  <p class="h1 m-auto">🕷️</p>
+                  <div class="spider-position" [style.top]="spiderTop + '%'" [style.left]="spiderLeft + '%'">
+                    <p class="h1 m-auto">🕷️</p>
+                  </div>
                 </div>
             </div>
           </div>
         </div>
     </div>
-    <div class="m-auto" *ngIf="currentInstance && !currentInstance.isRunning">
-      <h3 class="modal-title" id="modal-basic-title">Input/Output code is not running...</h3>
-      <h4 class="modal-title" id="modal-basic-title">Please click the <span class="bg-success mx-1 pl-2 pr-1 py-1 text-white rounded">Run code ⏵</span> button on the code writing page.</h4>
+    <div class="d-flex flex-row h-100" *ngIf="instanceDoesNotExist">
+      <div class="h-100 w-100 mb-1">
+        <div class="card shadow h-100">
+          <div class="d-flex card-header px-2 px-md-3 py-2 py-md-3 flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">Need to run Digital Maker on laptop first</h6>
+          </div>
+          <div class="m-2">
+            <p>The instance you are connecting to has not been cretated yet.</p>
+            <p>Before you load the Digital Maker on your smartphone, you must go to your laptop and open the "Write Code" page.</p>
+            <p>Please contact your Scout leader if you don't know what to do next<br/><span style="font-size: 36pt;">☺</span></p>
+            <p></p>
+            <p>Once you have loaded Digital Maker on your laptop, refresh your browser to reload this console.</p>
+          </div>
     </div>
   </div>
   <ng-template #modalDialog let-modal>

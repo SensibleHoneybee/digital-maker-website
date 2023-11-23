@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -24,29 +24,34 @@ export class WriteCodeComponent implements OnInit {
   unusedInputEventHandlers: InputEventHandler[];
   closeResult = '';
   dialogTitle = '';
+  dialogCanDismiss = true;
   currentCode = '';
   inputEventHandlerToSet = '';
   messageFeed = '';
   loadingMessage = '';
   loading = false;
+  initialised = false;
   @ViewChild('modalDialog') modalDialog: any;
   @ViewChild('modalRunCode') modalRunCode: any;
   @ViewChild('modalLoading') modalLoading: any;
-  @ViewChild("codingWindow") codingWindow: ElementRef;
-  @ViewChild("messagesWindow") messagesWindow: ElementRef;
+  @ViewChildren("codingWindow") codingWindows: QueryList<ElementRef>;
+  @ViewChildren("messagesWindow") messagesWindows: QueryList<ElementRef>;
+  codingWindow: ElementRef;
+  messagesWindow: ElementRef;
 
   constructor(private modalService: NgbModal, private formBuilder: FormBuilder, private mainService: MainService, private router: Router) {
     this.currentInstanceSubscription = mainService.currentInstance.subscribe(x => {
       this.currentInstance = x;
       this.currentInputEventHandler = null;
       if (x != null) {
+        this.initialised = true;
         if (this.inputEventHandlerToSet != null && this.inputEventHandlerToSet != '') {
           let iii = 0;
           while (iii < x.inputEventHandlers.length) {
             if (x.inputEventHandlers[iii].nameOfEvent == this.inputEventHandlerToSet) {
               this.currentInputEventHandler = x.inputEventHandlers[iii];
               this.currentCode = x.inputEventHandlers[iii].pythonCode;
-              this.codingWindow.nativeElement.focus();
+              if (this.codingWindow != null) this.codingWindow.nativeElement.focus();
             }
             iii++;
           }
@@ -93,8 +98,10 @@ export class WriteCodeComponent implements OnInit {
           this.messageFeed = this.messageFeed + '\n'; 
         }
         this.messageFeed = this.messageFeed + '• ' + msg;
-        this.messagesWindow.nativeElement.focus();
-        this.messagesWindow.nativeElement.scrollTop = this.messagesWindow.nativeElement.scrollHeight;
+        if (this.messagesWindow != null) {
+          this.messagesWindow.nativeElement.focus();
+          this.messagesWindow.nativeElement.scrollTop = this.messagesWindow.nativeElement.scrollHeight;
+        }
       }
     });
   }
@@ -106,6 +113,16 @@ export class WriteCodeComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
+    this.codingWindows.changes.subscribe((comps: QueryList<ElementRef>) =>
+    {
+        this.codingWindow = comps.first;
+        this.codingWindow.nativeElement.focus();
+    });
+    this.messagesWindows.changes.subscribe((comps: QueryList<ElementRef>) =>
+    {
+        this.messagesWindow = comps.first;
+    });
+
     this.loadingMessage = 'Loading, please wait...';
     this.mainService.setLoading(true);
     this.mainService.connectToInstance();
@@ -128,8 +145,8 @@ export class WriteCodeComponent implements OnInit {
 
     var inputEventHandler = this.currentInstance.inputEventHandlers.length > 0 ? this.currentInstance.inputEventHandlers[0] : null
     this.currentInputEventHandler = inputEventHandler;
-    this.currentCode = inputEventHandler.pythonCode;
-    this.codingWindow.nativeElement.focus();
+    this.currentCode = inputEventHandler != null ? inputEventHandler.pythonCode : '';
+    if (this.codingWindow != null) this.codingWindow.nativeElement.focus();
   }
   
   selectNewInputEventHandler(inputEventHandler: InputEventHandler): void {
@@ -144,7 +161,7 @@ export class WriteCodeComponent implements OnInit {
       // If no need to save, just set the new one directly
       this.currentInputEventHandler = inputEventHandler;
       this.currentCode = inputEventHandler.pythonCode;
-      this.codingWindow.nativeElement.focus();
+      if (this.codingWindow != null) this.codingWindow.nativeElement.focus();
     }
   }
 
@@ -166,13 +183,16 @@ export class WriteCodeComponent implements OnInit {
 
   showNewInputEventHandlerDialog() {
     this.dialogTitle = 'Add new input event'
-    this.modalService.open(this.modalDialog, {ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
+    this.dialogCanDismiss = false;
+    this.modalService.open(this.modalDialog, {ariaLabelledBy: 'modal-basic-title', beforeDismiss: () => this.dialogCanDismiss }).result.then((result) => {
     }, (reason) => {
       // No need to do anything if the user cancels
+      this.dialogCanDismiss = true;
     });
   }
 
   addNewInputEventHandler(inputEventHandler: InputEventHandler): void {
+    this.dialogCanDismiss = true;
     this.loadingMessage = 'Adding new input handler, please wait...';
     this.mainService.setLoading(true);
     this.mainService.addNewInputEventHandler(inputEventHandler);
@@ -191,7 +211,7 @@ export class WriteCodeComponent implements OnInit {
 
   revertCode(): void {
     this.currentCode = this.currentInputEventHandler.pythonCode;
-    this.codingWindow.nativeElement.focus();
+    if (this.codingWindow != null) this.codingWindow.nativeElement.focus();
   }
 
   runCode(): void {

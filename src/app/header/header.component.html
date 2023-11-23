@@ -2,12 +2,15 @@
   <div class="d-flex flex-row w-100 justify-content-between">
     <div class="d-flex flex-row align-items-center">
       <div class="d-flex flex-column">
-        <img class="logo" src='/assets/images/scouts-black.svg'>
-        <img class="logo-narrow" src='/assets/images/fleur-de-lis-marque-black-png.png'>
+        <img class="logo" src='assets/images/scouts-black.svg'>
+        <img class="logo-narrow" src='assets/images/fleur-de-lis-marque-black-png.png'>
         <label class="logo-text">7th Camberwell</label>
       </div>
       <div class="d-flex flex-column">
         <label class="page-title">{{currentPageTitle}}</label>
+      </div>
+      <div *ngIf="currentConnectionLost" class="d-flex flex-column bg-white border border-danger border-4 p-2 m-md-2">
+        <label class="page-title">It looks like your connection to the server is lost.<br/>Please refresh your browser...</label>
       </div>
     </div>
   </div>

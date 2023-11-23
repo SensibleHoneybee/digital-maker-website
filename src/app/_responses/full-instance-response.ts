@@ -10,7 +10,7 @@ export class FullInstanceResponse implements Deserializable<FullInstanceResponse
             participantNames: input.Instance.ParticipantNames,
             inputEventHandlers: input.Instance.InputEventHandlers.map(function (ieh: any) { return { nameOfEvent: ieh.NameOfEvent, pythonCode: ieh.PythonCode }}),
             outputReceivers: input.Instance.OutputReceivers.map(function (x: any) { return { outputReceiverName: x.OutputReceiverName, connectionId: x.ConnectionId }}),
-            isRunning: input.Instance.IsRunning
+            versionIdentifier: input.Instance.VersionIdentifier
         };
         return this;
     }

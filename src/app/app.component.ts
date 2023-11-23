@@ -9,6 +9,7 @@ import { UserMessageResponse } from './_responses/user-message-response';
 import { MainService } from './_services/main.service';
 import { NoInputHandlerResponse } from './_responses/no-input-handler-response';
 import { OutputActionResponse } from './_responses/output-action-response';
+import { ConnectionTestNumberResponse } from './_responses/connection-test-number';
 
 @Component({
   selector: 'app-root',
@@ -51,9 +52,12 @@ export class AppComponent {
           var messageResponse = new UserMessageResponse().deserialize(JSON.parse(responseWrapper.content));
           this.mainService.addNewUserMessage(messageResponse.message);
           break;
+        case DigitalMakerResponseType.ConnectionTestNumber:
+          var connectionTestNumberResponse = new ConnectionTestNumberResponse().deserialize(JSON.parse(responseWrapper.content));
+          this.mainService.setReceivedConnectionTestNumber(connectionTestNumberResponse.connectionTestNumber);
+          break;
         case DigitalMakerResponseType.Error:
           var errorResponse = new ErrorResponse().deserialize(JSON.parse(responseWrapper.content));
-          alert('Error\n' + errorResponse.message);
           if (errorResponse != null) {
             this.mainService.setErrorMessage('An error occurred: ' + errorResponse.message);
           } else {

@@ -82,6 +82,10 @@
   font-size: medium;
 }
 
+.border-4 {
+  border-width:4px !important;
+}
+
 @media screen and (max-width: 910px) {
   .larger {
     font-size: large;

@@ -6,6 +6,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { MainService } from '../_services/main.service';
 import { Router } from '@angular/router';
 import { InputReceivedRequest } from '../_requests/InputReceivedRequest';
+import { DigitalMakerResponseType } from '../digital-maker-response-type';
 
 @Component({
   selector: 'app-input-output-console',
@@ -21,6 +22,7 @@ export class InputOutputConsoleComponent implements OnInit {
   currentErrorMessageSubscription: Subscription;
   currentConsoleOutputTextSubscription: Subscription;
   currentPlaySoundSubscription: Subscription;
+  currentInternalMessageSubscription: Subscription;
   closeResult = '';
   dialogTitle = '';
   dialogLabel = '';
@@ -28,7 +30,10 @@ export class InputOutputConsoleComponent implements OnInit {
   currentPlaySound = '';
   currentInputTab = 0;
   currentOutputTab = 0;
+  spiderTop = 50;
+  spiderLeft = 50;
   loading = false;
+  instanceDoesNotExist = false;
   @ViewChild('modalDialog') modalDialog: any;
   @ViewChild('modalLoading') modalLoading: any;
 
@@ -57,6 +62,28 @@ export class InputOutputConsoleComponent implements OnInit {
         this.playSound(x);
       }
     });
+    this.currentInternalMessageSubscription = mainService.currentInternalMessage.subscribe(msg => {
+      // Listen for instance does not exist messages
+      if (msg == DigitalMakerResponseType.InstanceDoesNotExist) {
+        this.instanceDoesNotExist = true;
+      } else if (msg.substring(0, 11) == 'move-spider') {
+        switch (msg.substring(12))
+        {
+          case 'left':
+            this.spiderLeft -=5;
+            break;
+          case 'right':
+            this.spiderLeft +=5;
+            break;
+          case 'up':
+            this.spiderTop -=5;
+            break;
+          case 'down':
+            this.spiderTop +=5;
+            break;
+        }
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -74,13 +101,24 @@ export class InputOutputConsoleComponent implements OnInit {
     this.currentErrorMessageSubscription.unsubscribe();
     this.currentConsoleOutputTextSubscription.unsubscribe();
     this.currentPlaySoundSubscription.unsubscribe();
+    this.currentInternalMessageSubscription.unsubscribe();
   }
 
-  inputButtonClicked(colour: string) {
+  inputButtonClicked() {
     let inputReceivedRequest: InputReceivedRequest = {
       instanceId: this.currentInstance.instanceId,
       inputName: 'Button pressed',
-      data: colour
+      data: ''
+    };
+
+    this.mainService.inputReceived(inputReceivedRequest)
+  }
+
+  gameControllerButtonClicked(button: string) {
+    let inputReceivedRequest: InputReceivedRequest = {
+      instanceId: this.currentInstance.instanceId,
+      inputName: 'Game controller',
+      data: button
     };
 
     this.mainService.inputReceived(inputReceivedRequest)
@@ -88,7 +126,7 @@ export class InputOutputConsoleComponent implements OnInit {
 
   playSound(soundName: string) {
     let audio = new Audio();
-    audio.src = '/assets/sounds/' + soundName + '.mp3';
+    audio.src = 'assets/sounds/' + soundName + '.mp3';
     audio.load();
     audio.play();
   }

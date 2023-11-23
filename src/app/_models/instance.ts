@@ -6,5 +6,5 @@ export interface Instance {
     participantNames: string;
     inputEventHandlers: InputEventHandler[];
     outputReceivers: OutputReceiver[];
-    isRunning: boolean;
+    versionIdentifier: string;
 }

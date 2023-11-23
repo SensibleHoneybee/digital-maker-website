@@ -5,6 +5,7 @@ export enum DigitalMakerResponseType {
     NoInputHandler = 'NoInputHandler',
     OutputAction = 'OutputAction',
     UserMessage = 'UserMessage',
+    ConnectionTestNumber = 'ConnectionTestNumber',
     Error = 'Error',
     Success = 'Success'
 }

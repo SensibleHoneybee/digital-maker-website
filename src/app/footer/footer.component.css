@@ -1,0 +1,11 @@
+.footer-background {
+    background-color: lightblue;
+}
+
+.page-title {
+    margin: auto;
+    padding: 5px;
+    font-family: NunitoSans-Extrabold;
+    font-size: medium;
+    color: #300050
+  }

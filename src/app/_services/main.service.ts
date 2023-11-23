@@ -11,10 +11,15 @@ import { UpdateCodeRequest } from '../_requests/UpdateCodeRequest';
 import { StartOrStopRunningRequest } from '../_requests/StartOrStopRunningRequest';
 import { CreateInstanceRequest } from '../_requests/CreateInstanceRequest';
 import { InputReceivedRequest } from '../_requests/InputReceivedRequest';
+import { ConnectionTestNumberRequest } from '../_requests/ConnectionTestNumberRequest';
 import { DeleteInputEventHandlerRequest } from '../_requests/DeleteInputEventHandlerRequest';
 import { OutputActionResponse } from '../_responses/output-action-response';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 
 const WEBSERVICE_URL = "wss://ob1xmlgs72.execute-api.eu-west-2.amazonaws.com/Prod/";
+const SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token";
+const SPOTIFY_SEARCH_URL = "https://api.spotify.com/v1/search?type=track&limit=1&q=";
+const SPOTIFY_PLAY_URL = "https://api.spotify.com/v1/me/player/play";
 
 @Injectable({
   providedIn: 'root'
@@ -40,10 +45,23 @@ export class MainService {
   public currentConsoleOutputText: Observable<string>;
   private currentPlaySoundSubject: BehaviorSubject<string>;
   public currentPlaySound: Observable<string>;
-  
+  private currentSpotifyClientIdSubject: BehaviorSubject<string>;
+  public currentSpotifyClientId: Observable<string>;
+  private currentSpotifyClientSecretSubject: BehaviorSubject<string>;
+  public currentSpotifyClientSecret: Observable<string>;
+  private currentSpotifyAccessTokenSubject: BehaviorSubject<string>;
+  public currentSpotifyAccessToken: Observable<string>;
+  private currentReceivedConnectionTestNumberSubject: BehaviorSubject<string>;
+  public currentReceivedConnectionTestNumber: Observable<string>;
+  private currentConnectionLostSubject: BehaviorSubject<boolean>;
+  public currentConnectionLost: Observable<boolean>;  
+
   public messages: Subject<any>;
 
-  constructor(private wsService: WebsocketService) {
+  constructor(private wsService: WebsocketService, private http: HttpClient) {
+    var theStoredCurrentSpotifyClientId = sessionStorage.getItem('currentSpotifyClientId');
+    var theStoredCurrentSpotifyClientSecret = sessionStorage.getItem('currentSpotifyClientSecret');
+
     this.currentInstanceIdSubject = new BehaviorSubject<string>(null);
     this.currentInstanceId = this.currentInstanceIdSubject.asObservable();
     this.currentInstanceSubject = new BehaviorSubject<Instance>(null);
@@ -60,10 +78,20 @@ export class MainService {
     this.newUserMessage = this.newUserMessageSubject.asObservable();
     this.currentPageTitleSubject = new BehaviorSubject<string>('Digital Maker');
     this.currentPageTitle = this.currentPageTitleSubject.asObservable();
-    this.currentConsoleOutputTextSubject = new BehaviorSubject<string>('Digital Maker');
+    this.currentConsoleOutputTextSubject = new BehaviorSubject<string>('');
     this.currentConsoleOutputText = this.currentConsoleOutputTextSubject.asObservable();
     this.currentPlaySoundSubject = new BehaviorSubject<string>('');
     this.currentPlaySound = this.currentPlaySoundSubject.asObservable();
+    this.currentSpotifyClientIdSubject = new BehaviorSubject<string>(theStoredCurrentSpotifyClientId);
+    this.currentSpotifyClientId = this.currentSpotifyClientIdSubject.asObservable();
+    this.currentSpotifyClientSecretSubject = new BehaviorSubject<string>(theStoredCurrentSpotifyClientSecret);
+    this.currentSpotifyClientSecret = this.currentSpotifyClientSecretSubject.asObservable();
+    this.currentSpotifyAccessTokenSubject = new BehaviorSubject<string>('');
+    this.currentSpotifyAccessToken = this.currentSpotifyAccessTokenSubject.asObservable();
+    this.currentReceivedConnectionTestNumberSubject = new BehaviorSubject<string>('0');
+    this.currentReceivedConnectionTestNumber = this.currentReceivedConnectionTestNumberSubject.asObservable();
+    this.currentConnectionLostSubject = new BehaviorSubject<boolean>(false);
+    this.currentConnectionLost = this.currentConnectionLostSubject.asObservable();
 
     this.messages = <Subject<any>>wsService.connect(WEBSERVICE_URL).pipe(map(
       response => {
@@ -82,6 +110,11 @@ export class MainService {
   public get currentPageTitleValue(): string { return this.currentPageTitleSubject.value; }
   public get currentConsoleOutputTextValue(): string { return this.currentConsoleOutputTextSubject.value; }
   public get currentPlaySoundValue(): string { return this.currentPlaySoundSubject.value; }
+  public get currentSpotifyClientIdValue(): string { return this.currentSpotifyClientIdSubject.value; }
+  public get currentSpotifyClientSecretValue(): string { return this.currentSpotifyClientSecretSubject.value; }
+  public get currentSpotifyAccessTokenValue(): string { return this.currentSpotifyAccessTokenSubject.value; }
+  public get currentReceivedConnectionTestNumberValue(): string { return this.currentReceivedConnectionTestNumberSubject.value; }
+  public get currentConnectionLostValue(): boolean { return this.currentConnectionLostSubject.value; }
 
   leave() {
     // remove user from local storage to log user out
@@ -90,6 +123,11 @@ export class MainService {
     this.currentPageTitleSubject.next('Digital Maker');
     this.currentConsoleOutputTextSubject.next('');
     this.currentPlaySoundSubject.next('');
+    this.currentSpotifyClientIdSubject.next('');
+    this.currentSpotifyClientSecretSubject.next('');
+    this.currentSpotifyAccessTokenSubject.next('');
+    this.currentReceivedConnectionTestNumberSubject.next('');
+    this.currentConnectionLostSubject.next(false);
     this.currentInputEventHandlerSubject.next(null);
     this.newUserMessageSubject.next('');
     this.currentLoadingSubject.next(false);
@@ -133,6 +171,22 @@ export class MainService {
 
   setErrorMessage(b: string) {
     this.currentErrorMessageSubject.next(b);
+  }
+
+  setSpotifyClientIdAndSecret(id: string, secret: string) {
+    this.currentSpotifyClientIdSubject.next(id);
+    this.currentSpotifyClientSecretSubject.next(secret);
+
+    sessionStorage.setItem('currentSpotifyClientId', id);
+    sessionStorage.setItem('currentSpotifyClientSecret', secret);
+  }
+
+  setReceivedConnectionTestNumber(theNumber: string) {
+    this.currentReceivedConnectionTestNumberSubject.next(theNumber);
+  }
+
+  setConnectionLost(b: boolean) {
+    this.currentConnectionLostSubject.next(b);
   }
 
   addNewUserMessage(message: string) {
@@ -218,7 +272,7 @@ export class MainService {
 
     let connectInputOutputDeviceRequest = {
       instanceId: this.currentInstanceIdValue,
-      outputReceiverNames: [ 'text', 'sound' ]
+      outputReceiverNames: [ 'text', 'move-spider', 'sound' ]
     };
     let connectInputOutputDeviceRequestJson = JSON.stringify(connectInputOutputDeviceRequest);
     
@@ -239,17 +293,56 @@ export class MainService {
       case 'text':
         this.setConsoleOutputText(outputActionResponse.data);
         break;
+      case 'move-spider':
+        this.sendInternalMessage('move-spider ' + outputActionResponse.data);
+        break;
       case 'sound':
         this.playSound(outputActionResponse.data.toLowerCase());
         break;
-    }
+    } 
+  }
+
+  sendConnectionTestNumberRequest(connectionTestNumberRequest: ConnectionTestNumberRequest) {
+    let connectionTestNumberRequestJson = JSON.stringify(connectionTestNumberRequest);
     
+    var requestWrapper: RequestWrapper = { requestType: RequestType.ConnectionTestNumber, content: connectionTestNumberRequestJson };
+    this.messages.next(requestWrapper);
   }
 
   getDefaultInputEventHandlers(): InputEventHandler[] {
     return [
-      { nameOfEvent: 'Button pressed', pythonCode: '# Button pressed event\n# The colour of the button is available in a string variable called \'data\'\n' },
-      { nameOfEvent: 'Barcode scanned', pythonCode: '#\n' }
+      { nameOfEvent: 'Button pressed', pythonCode: '# Button pressed event\n' },
+      { nameOfEvent: 'Text input', pythonCode: '# Text input event\n# The text that was input can be used in your code. It is a string variable called \'data\'\n' },
+      { nameOfEvent: 'Game controller', pythonCode: '# Game controller event\n# The button that was pressed can be used in your code. It is a string variable called \'data\'\n# The value of \'data\' will be one of: \'left\', \'right\', \'up\', \'down\', \'red\', \'yellow\', \'green\' or \'blue\' \n' }
     ]
+  }
+
+  getSpotifyAccessToken(clientId: string, clientSecret: string) {
+    var options = {
+      headers: new HttpHeaders({
+        'Authorization': 'Basic ' + btoa(clientId + ':' + clientSecret),
+        'Content-Type': 'application/x-www-form-urlencoded',
+      })
+    };
+
+    this.http.post<string>(SPOTIFY_TOKEN_URL, new HttpParams().set('grant_type', 'client_credentials'), options).subscribe(
+        response => {
+            if (Object.keys(response)[0] == 'access_token') {
+              this.currentSpotifyAccessTokenSubject.next(Object.values(response)[0]);
+            } else {
+              alert('Non ' + Object.keys(response)[0]);
+            }
+        }
+    );
+  }
+
+  searchSpotify(searchTerm: string): Observable<string[]> {
+    alert('Access token: ' + this.currentSpotifyAccessTokenValue);
+    var options = {
+      headers: new HttpHeaders({
+        'Authorization': 'Bearer ' + this.currentSpotifyAccessTokenValue
+      })
+    };
+    return this.http.get<string[]>(SPOTIFY_SEARCH_URL + encodeURIComponent(searchTerm), options);
   }
 }

@@ -11,11 +11,14 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { HeaderComponent } from './header/header.component';
+import { HttpClientModule } from '@angular/common/http';
 import { FooterComponent } from './footer/footer.component';
 import { InputOutputConsoleComponent } from './input-output-console/input-output-console.component';
 import { WriteCodeComponent } from './write-code/write-code.component';
 import { CreateNewInstanceComponent } from './create-new-instance/create-new-instance.component';
 import { ErrorPageComponent } from './error-page/error-page.component';
+import { PlaySpotifyComponent } from './play-spotify/play-spotify.component';
+import { LoginToSpotifyComponent } from './login-to-spotify/login-to-spotify.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +28,9 @@ import { ErrorPageComponent } from './error-page/error-page.component';
     InputOutputConsoleComponent,
     WriteCodeComponent,
     CreateNewInstanceComponent,
-    ErrorPageComponent
+    ErrorPageComponent,
+    PlaySpotifyComponent,
+    LoginToSpotifyComponent
   ],
   imports: [
     BrowserModule,
@@ -37,7 +42,8 @@ import { ErrorPageComponent } from './error-page/error-page.component';
     BrowserAnimationsModule,
     NgbModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

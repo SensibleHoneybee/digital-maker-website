@@ -1,1 +1,9 @@
-<p>footer works!</p>
+<div class="d-flex pl-2 pt-1 py-md-2 border-bottom shadow-sm footer-background">
+    <div class="d-flex flex-row w-100 justify-content-between">
+      <div class="d-flex flex-row align-items-center">
+        <div class="d-flex flex-column">
+          <label class="page-title">Version: {{currentInstance != null ? currentInstance.versionIdentifier.charAt(0).toUpperCase() + currentInstance.versionIdentifier.slice(1) : ''}}</label>
+        </div>
+      </div>
+    </div>
+  </div>

@@ -28,6 +28,11 @@ export class WebsocketService {
     let observer = {
       next: (data: Object) => {
         let sendMessage = { message: "sendmessage", data: JSON.stringify(data) };
+        if (ws.readyState === WebSocket.CLOSING || ws.readyState === WebSocket.CLOSED) {
+          // With closed socket, user will just be notified by other processes that they
+          // should refresh. No need for action.
+          return;
+        }
         if (ws.readyState === WebSocket.OPEN) {
           ws.send(JSON.stringify(sendMessage));
         } else {
@@ -48,7 +53,7 @@ export class WebsocketService {
                         if (ws.readyState === WebSocket.OPEN) {
                           ws.send(JSON.stringify(sendMessage));
                         } else {
-                          alert('Could not connect');
+                          alert('Could not connect to websocket. Please contact your Scout leader.');
                         }
                       }, 1000);   
                     }

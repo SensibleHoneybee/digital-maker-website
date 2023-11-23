@@ -8,5 +8,6 @@ export enum RequestType {
     UpdateCode = 'UpdateCode',
     StartOrStopRunning = 'StartOrStopRunning',
     ConnectInputOutputDevice = 'ConnectInputOutputDevice',
-    InputReceived = 'InputReceived'
+    InputReceived = 'InputReceived',
+    ConnectionTestNumber = 'ConnectionTestNumber',
 }
